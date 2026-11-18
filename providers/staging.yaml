@@ -1,0 +1,26 @@
+#ddev-generated
+# Installed by vlaaibaar/ddev-addon. Do not edit: changes are overwritten on update.
+# Project settings live in .ddev/vlaaibaar/sync/staging.env
+#
+#   ddev pull staging [--skip-db|--skip-files]
+#   ddev push staging [--skip-db|--skip-files]   (only when ALLOW_PUSH=true)
+
+auth_command:
+  command: bash /var/www/html/.ddev/vlaaibaar/sync/run.sh staging auth
+  service: web
+
+db_pull_command:
+  command: bash /var/www/html/.ddev/vlaaibaar/sync/run.sh staging db-pull
+  service: web
+
+files_pull_command:
+  command: bash /var/www/html/.ddev/vlaaibaar/sync/run.sh staging files-pull
+  service: web
+
+db_push_command:
+  command: bash /var/www/html/.ddev/vlaaibaar/sync/run.sh staging db-push
+  service: web
+
+files_push_command:
+  command: bash /var/www/html/.ddev/vlaaibaar/sync/run.sh staging files-push
+  service: web

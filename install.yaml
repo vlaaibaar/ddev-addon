@@ -1,0 +1,25 @@
+name: vlaaibaar
+
+# Files copied into the project's .ddev/ folder. Files containing #ddev-generated
+# are overwritten on `ddev add-on get vlaaibaar/ddev-addon` (updates);
+# the per-project .env files are not, so project settings are kept.
+project_files:
+  - providers/production.yaml
+  - providers/staging.yaml
+  - vlaaibaar/sync/run.sh
+  - vlaaibaar/sync/example.env
+
+ddev_version_constraint: '>= v1.24.0'
+
+post_install_actions:
+  - |
+    #ddev-description:Create sync settings files (kept on update)
+    set -eu
+    cd "${DDEV_APPROOT}/.ddev/vlaaibaar/sync"
+    for env in production staging; do
+      if [ ! -f "${env}.env" ]; then
+        grep -v -e '^#ddev-generated' -e '^ALLOW_PUSH=' example.env > "${env}.env"
+        if [ "${env}" = "staging" ]; then echo 'ALLOW_PUSH=true' >> "${env}.env"; else echo 'ALLOW_PUSH=false' >> "${env}.env"; fi
+        echo "Created .ddev/vlaaibaar/sync/${env}.env, fill it in."
+      fi
+    done
