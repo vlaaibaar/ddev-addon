@@ -14,9 +14,9 @@ Updating overwrites only the add-on's own files (marked `#ddev-generated`). Proj
 Adds the DDEV providers `production` and `staging` for Craft CMS sites.
 
 1. Fill in the shared settings in `.ddev/vlaaibaar/sync/production.env` and `staging.env` (created on install). Commit them.
-2. Choose the SSH user:
-   - **Shared user** (recommended on Cloudways): set `SSH_USER` to the server's master user in the shared `.env` file. Each developer adds their own public key under *Master Credentials → SSH Public Keys*, so access is revoked per person by removing their key.
-   - **Personal users**: each developer creates their own `production.local.env` / `staging.local.env` next to them, with only their SSH user (see `example.local.env`). These files are gitignored and override a shared `SSH_USER`.
+2. Each developer syncs with their **own** SSH user, set in `production.local.env` / `staging.local.env` next to the shared files (see `example.local.env`). These files are gitignored. On Cloudways, use a personal application user with your own public key: its access ends with the person, it only reaches this application, and it runs the app's PHP version.
+
+   A shared user (e.g. the Cloudways master user, with each developer's own key added to it) can be set as `SSH_USER` in the shared `.env` file instead; a `.local.env` value still overrides it. Use absolute paths when users have different home folders.
 3. Use it:
 
 ```
@@ -34,8 +34,8 @@ Add `-y` to skip the confirmation prompt.
 | Setting | Meaning |
 | --- | --- |
 | `SSH_HOST` | Host or IP of the server, without a user. An older `user@host` value still works |
-| `SSH_USER` | SSH user. Either shared in `<env>.env` (e.g. the Cloudways master user) or personal in `<env>.local.env`, which wins. SSH keys handle authentication |
-| `REMOTE_PATH` | Folder with the `craft` executable. Relative paths start from the SSH user's home folder; use an absolute path for the Cloudways master user |
+| `SSH_USER` | Your own SSH user, in `<env>.local.env`. Optionally a shared user in `<env>.env`, which `.local.env` overrides. SSH keys handle authentication |
+| `REMOTE_PATH` | Folder with the `craft` executable. Relative paths start from the SSH user's home folder, so an absolute path (e.g. `/home/<server>.cloudwaysapps.com/<app>/public_html`) works for every user |
 | `REMOTE_UPLOADS` | Uploads folder on the server |
 | `ALLOW_PUSH` | `true` allows `ddev push`. Created as `false` for production, `true` for staging |
 | `REMOTE_PHP` | Optional. PHP binary on the server, default `php<version>` from `php_version` in `.ddev/config.yaml` (e.g. `php8.3`), falling back to `php` if that doesn't exist |
