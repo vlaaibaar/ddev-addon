@@ -42,6 +42,6 @@ Add `-y` to skip the confirmation prompt.
 
 How it works:
 - The database is exported and restored with Craft's `craft db/backup` / `db/restore` on the server, so no database passwords are needed locally. After a push, `craft up` runs.
-- Commands on the server run with `umask 002`, and pushed uploads are made group-writable, so files stay writable for the site when the SSH user isn't the PHP user (e.g. the Cloudways master user).
+- Commands on the server run with `umask 002`, and pushed uploads get fixed modes (directories `775`, files `664`), so they stay readable for the web server and writable for the site, whoever owns them.
 - Pulling uploads mirrors the server (local-only files are removed). Pushing uploads never deletes files on the server.
 - Local uploads go to the project's `upload_dirs` (set in `.ddev/config.yaml`).

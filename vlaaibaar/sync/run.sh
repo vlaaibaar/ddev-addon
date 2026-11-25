@@ -91,9 +91,10 @@ case "${ACTION}" in
     require_push
     echo "Pushing local uploads to ${SSH_TARGET}:${REMOTE_UPLOADS}"
     # No --delete on push, to be safe.
-    # Group-writable files and no group/dir-time changes, so this also works when the SSH user
-    # (e.g. the Cloudways master user) isn't the owner of the files the site created.
-    rsync -az --no-group --omit-dir-times --chmod=Dg+w,Fg+w "${DDEV_FILES_DIR}/" "${SSH_TARGET}:${REMOTE_UPLOADS}/"
+    # Fixed modes (dirs 775, files 664) instead of the local ones, which can be 700/600 after a
+    # pull: files must stay readable for the web server and writable for the site's PHP user
+    # (same group). No group or dir-time changes, so it also works on files owned by another user.
+    rsync -az --no-group --omit-dir-times --chmod=D775,F664 "${DDEV_FILES_DIR}/" "${SSH_TARGET}:${REMOTE_UPLOADS}/"
     ;;
 
   *)
