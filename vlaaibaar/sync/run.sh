@@ -78,6 +78,14 @@ case "${ACTION}" in
   files-pull)
     mkdir -p "${DOWNLOADS}/files"
     rsync -az --delete "${SSH_TARGET}:${REMOTE_UPLOADS}/" "${DOWNLOADS}/files/"
+    # DDEV empties the local upload dir before importing these files, which would also remove
+    # files that only exist locally, such as a committed .gitignore that keeps the uploads out of
+    # git. Carry the local ones over, so the import puts them back.
+    for keep in .gitignore .gitkeep; do
+      if [ -f "${DDEV_FILES_DIR:-}/${keep}" ]; then
+        cp -p "${DDEV_FILES_DIR}/${keep}" "${DOWNLOADS}/files/${keep}"
+      fi
+    done
     ;;
 
   db-push)
